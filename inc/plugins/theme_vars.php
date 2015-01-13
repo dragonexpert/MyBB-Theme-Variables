@@ -13,6 +13,7 @@ function theme_vars_info()
     "description" => "Lets you create variables to improve your themes.",
     "author" => "Mark Janssen",
     "codename" => "theme_vars",
+    "version" => "1.0",
     "compatibility" => "18*"
     );
 }
