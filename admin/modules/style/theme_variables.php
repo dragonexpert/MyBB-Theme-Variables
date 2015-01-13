@@ -21,7 +21,7 @@ if($mybb->input['tid'] && !$mybb->input['action'])
     $table->construct_row();
     if(!$db->num_rows($query))
     {
-        $table->construct_cell("There are no results to display.", array("colspan" => 5, "style" => "text-align:center"));
+        $table->construct_cell("There are no results to display.", array("colspan" => 6, "style" => "text-align:center"));
     }
     while($stylevar = $db->fetch_array($query))
     {
@@ -29,6 +29,7 @@ if($mybb->input['tid'] && !$mybb->input['action'])
         $table->construct_cell("@{" . $stylevar['unique_name'] . "}");
         $table->construct_cell(htmlspecialchars($stylevar['content']));
         $table->construct_cell("<a href='" . $baseurl . "&amp;action=edit&amp;vid=" . $stylevar['vid'] . "'>Edit</a>");
+        $table->construct_cell("<a href='" . $baseurl . "&amp;action=copy&amp;vid=" . $stylevar['vid'] . "'>Copy</a>");
         $table->construct_cell("<a href='" . $baseurl . "&amp;action=delete&amp;vid=" . $stylevar['vid'] . "'>Delete</a>");
         $table->construct_row();
     }
@@ -229,6 +230,43 @@ if($mybb->input['action'] == "create")
         $form_container->output_row("Content <em>*</em>", "This is the content users will see.", $form->generate_text_area("content", ""), "content");
         $form_container->end();
         $form->output_submit_wrapper(array($form->generate_submit_button("Create Variable")));
+        $form->end();
+    }
+}
+
+if($mybb->input['action'] == "copy" && $mybb->input['vid'])
+{
+    $vid = (int) $mybb->get_input("vid");
+    $variablequery =$db->simple_select("theme_variables", "*", "vid=$vid");
+    $info =$db->fetch_array($variablequery);
+    if(!$info['vid'])
+    {
+        flash_message("Invalid variable.", "error");
+        admin_redirect("index.php?module=style-theme_vars");
+    }
+    $page->add_breadcrumb_item("Copy Variable");
+    $page->output_header("Theme Variable Manager");
+    if($mybb->request_method == "post" && verify_post_check($mybb->input['my_post_key']))
+    {
+        $info['tid'] = (int) $mybb->get_input("tid");
+        $info['vid'] = "";
+        $db->insert_query("theme_variables", $info);
+        flash_message("The variable has been copied.", "success");
+        admin_redirect("index.php?module=style-theme_vars&tid=" . $info['tid']);
+    }
+    else
+    {
+        // We build a list of themes excluding the one it comes from.
+        $themequery = $db->simple_select("themes", "tid,name", "tid != ". $info['tid']);
+        while($theme = $db->fetch_array($themequery))
+        {
+            $themearray[$theme['tid']] = $theme['name'];
+        }
+        $form = new DefaultForm("index.php?module=style-theme_vars&action=copy&vid=$vid", "post");
+        $form_container = new FormContainer("Copy Variable");
+        $form_container->output_row("Copy to which theme?", "", $form->generate_select_box("tid", $themearray));
+        $form_container->end();
+        $form->output_submit_wrapper(array($form->generate_submit_button("Copy")));
         $form->end();
     }
 }
