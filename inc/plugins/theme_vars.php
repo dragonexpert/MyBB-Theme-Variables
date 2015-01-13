@@ -90,6 +90,11 @@ function theme_vars_pre_output_page(&$contents)
 {
     global $mybb, $db;
     $themeid = $mybb->user['style'];
+    if(!$themeid)
+    {
+        $defaultthemequery = $db->simple_select("themes", "tid", "def=1");
+        $themeid = $db->fetch_field($defaultthemequery, "tid");
+    }
     $stylequery = $db->simple_select("theme_variables", "*", "tid=$themeid AND active=1");
     $usergroups = $mybb->user['usergroup'];
     if($mybb->user['additionalgroups'])
