@@ -33,11 +33,7 @@ if($mybb->input['tid'] && !$mybb->input['action'])
         $table->construct_row();
     }
     $table->output("Available Variables");
-    $form = new DefaultForm("index.php", "get");
-    $form_container = new FormContainer("");
-    $form_container->output_row("", "", $form->generate_hidden_field("module", "style-theme_vars"));
-    $form_container->output_row("", "", $form->generate_hidden_field("action", "create"));
-    $form_container->end();
+    $form = new DefaultForm("index.php?module=style-theme_vars&action=create", "post");
     $form->output_submit_wrapper(array($form->generate_submit_button("Create Variable")));
     $form->end();
 }
@@ -157,7 +153,7 @@ if($mybb->input['action'] == "delete" && $mybb->input['vid'])
 if($mybb->input['action'] == "create")
 {
     $page->add_breadcrumb_item("Create Variable", $baseurl . "&amp;action=create");
-    if($mybb->request_method == "post" && verify_post_check($mybb->input['my_post_key']))
+    if($mybb->request_method == "post" && verify_post_check($mybb->input['my_post_key'] && $mybb->input['unique_name']))
     {
         $new_variable = array(
         "tid" => (int) $mybb->get_input("tid"),
