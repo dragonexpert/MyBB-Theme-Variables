@@ -4,7 +4,6 @@ if(!defined("IN_MYBB"))
     die("Direct access not allowed.");
 }
 
-$page->output_header("Theme Variable Manager");
 
 $page->add_breadcrumb_item("Themes", "index.php?module=style-theme_vars");
 $baseurl = "index.php?module=style-theme_vars";
@@ -12,7 +11,8 @@ $table = new TABLE;
 if($mybb->input['tid'] && !$mybb->input['action'])
 {
     $tid = (int) $mybb->input['tid'];
-    $page->add_breadcrumb_item("Variable Management", $basurl . "&amp;tid=$tid");
+    $page->add_breadcrumb_item("Variable Management");
+    $page->output_header("Theme Variable Manager");
     $query = $db->simple_select("theme_variables", "*", "tid=$tid", array("order_by" => "name", "order_dir" => "ASC"));
     $table->construct_header("Name");
     $table->construct_header("Syntax");
@@ -33,21 +33,43 @@ if($mybb->input['tid'] && !$mybb->input['action'])
         $table->construct_row();
     }
     $table->output("Available Variables");
-    $form = new DefaultForm("index.php?module=style-theme_vars&action=create", "post");
+    $form = new DefaultForm("index.php?module=style-theme_vars&action=create&tid=$tid", "post");
     $form->output_submit_wrapper(array($form->generate_submit_button("Create Variable")));
     $form->end();
 }
 if(!$mybb->input['action'] && !$mybb->input['tid'])
 {
+    $page->output_header("Theme Variable Manager");
     // No action so show a list of themes
     $themequery = $db->simple_select("themes", "tid,name,allowedgroups");
+    // Create a cache of variable count so admins know how many variables they have.
+    $variablequery = $db->simple_select("theme_variables", "tid");
+    $themecounts = array();
+    while($count = $db->fetch_array($variablequery))
+    {
+        $key = $count['tid'];
+        if(array_key_exists($key, $themecounts))
+        {
+            $themecounts[$key] +=1;
+        }
+        else
+        {
+            $themecounts[$key] = 1;
+        }
+    }
     $table->construct_header("Theme");
+    $table->construct_header("Variables");
     $table->construct_header("Allowed Groups");
     $table->construct_header("Manage", array("colspan" => 3));
     $table->construct_row();
     while($theme = $db->fetch_array($themequery))
     {
+        if(!$themecounts[$theme['tid']])
+        {
+            $themecounts[$theme['tid']] = 0;
+        }
         $table->construct_cell($theme['name']);
+        $table->construct_cell($themecounts[$theme['tid']]);
         $table->construct_cell($theme['allowedgroups']);
         $table->construct_cell("<a href='" . $baseurl. "&amp;tid=" . $theme['tid']. "'>Manage Variables</a>");
         $table->construct_cell("<a href='index.php?module=style-themes&amp;action=edit&amp;tid=" . $theme['tid'] . "'>Edit Properties</a>");
@@ -63,10 +85,14 @@ if(!$mybb->input['action'] && !$mybb->input['tid'])
         $table->construct_row();
     }
     $table->output("Themes");
+    $form = new DefaultForm("index.php?module=style-theme_vars&action=create&tid=" . $theme['tid'], "post");
+    $form->output_submit_wrapper(array($form->generate_submit_button("Create Variable")));
+    $form->end();
 }
 
 if($mybb->input['action'] == "edit" && $mybb->input['vid'])
 {
+    $page->output_header("Theme Variable Manager");
     $vid = (int) $mybb->get_input("vid");
     // Validate if it is a real variable
     $variablequery = $db->simple_select("theme_variables", "*", "vid=$vid");
@@ -120,6 +146,7 @@ if($mybb->input['action'] == "edit" && $mybb->input['vid'])
 
 if($mybb->input['action'] == "delete" && $mybb->input['vid'])
 {
+    $page->output_header("Theme Variable Manager");
     $vid = (int) $mybb->get_input("vid");
     // Verify the variable exists
     $query = $db->simple_select("theme_variables", "*", "vid=$vid");
@@ -152,7 +179,21 @@ if($mybb->input['action'] == "delete" && $mybb->input['vid'])
 
 if($mybb->input['action'] == "create")
 {
-    $page->add_breadcrumb_item("Create Variable", $baseurl . "&amp;action=create");
+    $themequery = $db->simple_select("themes", "*");
+    while($result = $db->fetch_array($themequery))
+    {
+        $themearray[$result['tid']] = $result['name'];
+    }
+    if($mybb->input['tid'])
+    {
+        $tid = (int) $mybb->input['tid'];
+        $page->add_breadcrumb_item($themearray[$tid], "index.php?module=style-theme_vars&tid=$tid");
+    }
+    else
+    {
+        $page->add_breadcrumb_item("Create Variable", $baseurl . "&amp;action=create");
+    }
+    $page->output_header("Theme Variable Manager");
     if($mybb->request_method == "post" && verify_post_check($mybb->input['my_post_key'] && $mybb->input['unique_name']))
     {
         $new_variable = array(
@@ -170,11 +211,6 @@ if($mybb->input['action'] == "create")
     }
     else
     {
-        $themequery = $db->simple_select("themes", "*");
-        while($result = $db->fetch_array($themequery))
-        {
-            $themearray[$result['tid']] = $result['name'];
-        }
         // Usergroup query because no All option
         $usergroups['-1'] = "All";
         $usergroupquery = $db->simple_select("usergroups", "gid,title");
