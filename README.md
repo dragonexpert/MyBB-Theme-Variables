@@ -5,7 +5,9 @@ Theme variables allows you to easily create variables that you can place in your
 - Each Theme can have an unlimited number of variables.
 - Ability to control which usergroups will see the content.
 - Ability to control what forum it will show up in.
+- Ability to copy a variable to another theme.
 - Easy to use interface
+- Easy to install
 - Lightweight, but powerful
  
 
