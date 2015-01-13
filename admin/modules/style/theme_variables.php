@@ -93,6 +93,7 @@ if(!$mybb->input['action'] && !$mybb->input['tid'])
 
 if($mybb->input['action'] == "edit" && $mybb->input['vid'])
 {
+    $page->add_breadcrumb_item("Editing Variable");
     $page->output_header("Theme Variable Manager");
     $vid = (int) $mybb->get_input("vid");
     // Validate if it is a real variable
@@ -109,8 +110,8 @@ if($mybb->input['action'] == "edit" && $mybb->input['vid'])
         "tid" => (int) $mybb->get_input("tid"),
         "name" => $db->escape_string($mybb->get_input("name")),
         "active" => (int) $mybb->get_input("active"),
-        "usergroups" => $db->escape_string($mybb->get_input("usergroups")),
-        "forums" => $db->escape_string($mybb->get_input("forums")),
+        "usergroups" => $db->escape_string(implode(",", $mybb->input['usergroups'])),
+        "forums" => $db->escape_string(implode(",", $mybb->input['forums'])),
         "content" => $db->escape_string($mybb->get_input("content"))
         );
         $db->update_query("theme_variables", $updated_variable, "vid=$vid");
@@ -136,8 +137,8 @@ if($mybb->input['action'] == "edit" && $mybb->input['vid'])
         $form_container->output_row("Name <em>*</em>", "Enter the readable name of the variable.", $form->generate_text_box("name", $info['name']), "name");
         $form_container->output_row("Theme ", "Which theme the variable belongs to.", $form->generate_select_box("tid", $themearray, $info['tid']), "tid");
         $form_container->output_row("Active", "If no, this variable will not be replaced.", $form->generate_select_box("active", array("1" => "Yes", "0" => "No"), $info['active']), "active");
-        $form_container->output_row("Forums", "Select which forums this variable will work in.", $form->generate_forum_select("forums", $info['forums'], array("main_option" => "All", "multiple" => "multiple")), "forums");
-        $form_container->output_row("Usergroups", "Select which usergroups will see the content.", $form->generate_select_box("usergroups", $usergroups, $info['usergroups'], array("multiple" => "multiple")), "usergroups");
+        $form_container->output_row("Forums", "Select which forums this variable will work in.", $form->generate_forum_select("forums[]", $info['forums'], array("main_option" => "All", "multiple" => "multiple")), "forums");
+        $form_container->output_row("Usergroups", "Select which usergroups will see the content.", $form->generate_select_box("usergroups[]", $usergroups, explode(",", $info['usergroups']), array("multiple" => "multiple")), "usergroups");
         $form_container->output_row("Content <em>*</em>", "This is the content users will see.", $form->generate_text_area("content", $info['content']), "content");
         $form_container->end();
         $form->output_submit_wrapper(array($form->generate_submit_button("Update Variable")));
@@ -202,8 +203,8 @@ if($mybb->input['action'] == "create")
         "unique_name" => $db->escape_string($mybb->get_input("unique_name")),
         "name" => $db->escape_string($mybb->get_input("name")),
         "active" => (int) $mybb->get_input("active"),
-        "usergroups" => $db->escape_string($mybb->get_input("usergroups")),
-        "forums" => $db->escape_string($mybb->get_input("forums")),
+        "usergroups" => $db->escape_string(implode(",", $mybb->input['usergroups'])),
+        "forums" => $db->escape_string(implode(",", $mybb->input['forums'])),
         "content" => $db->escape_string($mybb->get_input("content"))
         );
         $db->insert_query("theme_variables", $new_variable);
@@ -225,8 +226,8 @@ if($mybb->input['action'] == "create")
         $form_container->output_row("Name <em>*</em>", "Enter the readable name of the variable.", $form->generate_text_box("name", $mybb->get_input("name")), "name");
         $form_container->output_row("Theme ", "Which theme the variable belongs to.", $form->generate_select_box("tid", $themearray, $mybb->get_input("tid")), "tid");
         $form_container->output_row("Active", "If no, this variable will not be replaced.", $form->generate_select_box("active", array("1" => "Yes", "0" => "No"), $mybb->get_input("active")), "active");
-        $form_container->output_row("Forums", "Select which forums this variable will work in.", $form->generate_forum_select("forums", -1, array("main_option" => "All", "multiple" => "multiple")), "forums");
-        $form_container->output_row("Usergroups", "Select which usergroups will see the content.", $form->generate_select_box("usergroups", $usergroups, -1, array("multiple" => "multiple")), "usergroups");
+        $form_container->output_row("Forums", "Select which forums this variable will work in.", $form->generate_forum_select("forums[]", -1, array("main_option" => "All", "multiple" => "multiple")), "forums");
+        $form_container->output_row("Usergroups", "Select which usergroups will see the content.", $form->generate_select_box("usergroups[]", $usergroups, -1, array("multiple" => "multiple")), "usergroups");
         $form_container->output_row("Content <em>*</em>", "This is the content users will see.", $form->generate_text_area("content", ""), "content");
         $form_container->end();
         $form->output_submit_wrapper(array($form->generate_submit_button("Create Variable")));
