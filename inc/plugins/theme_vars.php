@@ -99,7 +99,7 @@ function theme_vars_pre_output_page(&$contents)
     $usergroups = $mybb->user['usergroup'];
     if($mybb->user['additionalgroups'])
     {
-        $usergroups .= "," . $mybb->user['usergroups']; 
+        $usergroups .= "," . $mybb->user['additionalgroups']; 
     }
     $mygroups = explode(",", $usergroups);
     while($stylevar = $db->fetch_array($stylequery))
@@ -126,7 +126,7 @@ function theme_vars_pre_output_page(&$contents)
             {
                 $fid = (int) $mybb->get_input("fid");
                 $allowedforums = explode(",", $stylevar['forums']);
-                if(in_array($fid, $allowedforums))
+                if(in_array($fid, $allowedforums) && $apply == true)
                 {
                     $apply = TRUE;
                 }
