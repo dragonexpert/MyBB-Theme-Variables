@@ -114,13 +114,20 @@ function theme_vars_pre_output_page(&$contents)
                 }
             }
         }
-        if($stylevar['forums'] != -1 && THIS_SCRIPT == "forumdisplay.php")
+        if($stylevar['forums'] != -1)
         {
-            $fid = (int) $mybb->get_input("fid");
-            $allowedforums = explode(",", $stylevar['forums']);
-            if(in_array($fid, $allowedforums))
+            if(THIS_SCRIPT == "forumdisplay.php")
             {
-                $apply = TRUE;
+                $fid = (int) $mybb->get_input("fid");
+                $allowedforums = explode(",", $stylevar['forums']);
+                if(in_array($fid, $allowedforums))
+                {
+                    $apply = TRUE;
+                }
+                else
+                {
+                    $apply = FALSE;
+                }
             }
             else
             {
