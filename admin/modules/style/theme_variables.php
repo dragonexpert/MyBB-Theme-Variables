@@ -13,7 +13,7 @@ if($mybb->input['tid'] && !$mybb->input['action'])
     $tid = (int) $mybb->input['tid'];
     $page->add_breadcrumb_item("Variable Management");
     $page->output_header("Theme Variable Manager");
-    $query = $db->simple_select("theme_variables", "*", "tid=$tid", array("order_by" => "name", "order_dir" => "ASC"));
+    $query = $db->simple_select("theme_variables", "*", "tid IN(-1,$tid)", array("order_by" => "name", "order_dir" => "ASC"));
     $table->construct_header("Name");
     $table->construct_header("Syntax");
     $table->construct_header("Replacement");
@@ -46,9 +46,14 @@ if(!$mybb->input['action'] && !$mybb->input['tid'])
     // Create a cache of variable count so admins know how many variables they have.
     $variablequery = $db->simple_select("theme_variables", "tid");
     $themecounts = array();
+    $globalkeys = 0;
     while($count = $db->fetch_array($variablequery))
     {
         $key = $count['tid'];
+        if($key == -1)
+        {
+            ++$globalkeys;
+        }
         if(array_key_exists($key, $themecounts))
         {
             $themecounts[$key] +=1;
@@ -69,6 +74,7 @@ if(!$mybb->input['action'] && !$mybb->input['tid'])
         {
             $themecounts[$theme['tid']] = 0;
         }
+        $themecounts[$theme['tid']] += $globalkeys;
         $table->construct_cell($theme['name']);
         $table->construct_cell($themecounts[$theme['tid']]);
         $table->construct_cell($theme['allowedgroups']);
@@ -121,6 +127,7 @@ if($mybb->input['action'] == "edit" && $mybb->input['vid'])
     else
     {
         $themequery = $db->simple_select("themes", "*");
+        $themearray[-1] = "All";
         while($result = $db->fetch_array($themequery))
         {
             $themearray[$result['tid']] = $result['name'];
@@ -182,6 +189,7 @@ if($mybb->input['action'] == "delete" && $mybb->input['vid'])
 if($mybb->input['action'] == "create")
 {
     $themequery = $db->simple_select("themes", "*");
+    $themearray[-1] = "All";
     while($result = $db->fetch_array($themequery))
     {
         $themearray[$result['tid']] = $result['name'];
