@@ -178,7 +178,7 @@ if($mybb->input['action'] == "delete" && $mybb->input['vid'])
             admin_redirect($baseurl . "&tid=" . $info['tid']);
         }
     }
-    $form = new DefaultForm("index.php?module=style-theme_vars&action=delete&vid=$vid", "delete");
+    $form = new DefaultForm("index.php?module=style-theme_vars&action=delete&vid=$vid", "post");
     $form_container = new FormContainer("Delete Variable");
     $form_container->output_row("Delete this variable?", "", $form->generate_select_box("confirm", array("0" => "No", "1" => "Yes"), 0));
     $form_container->end();
