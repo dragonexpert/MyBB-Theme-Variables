@@ -10,6 +10,8 @@ This will describe features that will be available in the Premium version of thi
 - Ability to loop through a CSV list, choose which element each datum should be, ability to sort none, asc, desc, and random. - Done
 - Ability to use $mybb->user['$field']. - Done
 - Ability to use $mybb->usergroup['$field']. - Done
-- ABility to use $lang->$key. - Done
+- Ability to use $lang->$key. - Done
+- Ability to use [uid=csvlist]Content[/uid]. - Done
+- Ability to use [uid!=csvlist]Content[/uid]. - Done
 - Some variables predefined with special functions. - In Progress
 - Real time help over Skype if I am online.
