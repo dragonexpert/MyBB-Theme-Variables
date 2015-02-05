@@ -1,6 +1,6 @@
 
 #Premium Theme Variables for MyBB
-This will describe features that will be available in the Premium version of this plugin.
+This will describe features that will be available in the Premium version of this plugin.  If you have questions about the Premium version or wish to purchase a licence for it, please send me a private message on the MyBB Community Forums.
 
 ##Features & Benefits
 - Ability to set a parsing order. - Done
@@ -13,5 +13,4 @@ This will describe features that will be available in the Premium version of thi
 - Ability to use $lang->$key. - Done
 - Ability to use [uid=csvlist]Content[/uid]. - Done
 - Ability to use [uid!=csvlist]Content[/uid]. - Done
-- Some variables predefined with special functions. - In Progress
-- Real time help over Skype if I am online.
+- Real time help for issues related to this plugin over Skype if I am online.
