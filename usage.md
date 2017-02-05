@@ -34,14 +34,21 @@ the content between the tags.
 1) Parsing Order - This determines the order in which variables are parsed.  Lower number is parsed before a higher number.  
 2)  No Match - This is what is shown to a user who is not allowed to view the content.  
 3)  Regex - This is used if you want to use a regular expression instead of simple replacement. 
+4) Replacement - You are able to use the $mybb->user array and $mybb->usergroup array.  
 
 ## Special Code In Templates
 1) Detecting Mobile Browser - You can use [mobile]Content here[/mobile] to show content to only users browsing on a mobile device.  
 2) Detecting Desktop Browser - Use [desktop]Content Here[/desktop] to show content to only desktop users.  
+3) Show to certain userids only - Use [uid=1,2,3]Content Here[/uid]. Only uuid 1, 2, or 3 will see the content. You can use an exclamation mark before the equal sign to signify all users but the ones you list.  
+
 
 ## For Loop
 At the most basic level, it loops through all elements and puts them each in their own span.  
 Example: [foreach]1,3,2,4[/foreach]  
+
+You can also choose what mode to use and sorting options.  
+[foreach mode=(p|span|div|ol|ul|table) sort=(asc|desc|random)]Comma separated values here[/foreach]  
+  
 ### Allowed values for mode
 - span, div, ol, ul, table, p  
 
