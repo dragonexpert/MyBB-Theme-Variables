@@ -18,13 +18,39 @@ This will create a variable that shows content to only staff usergroups.
 2) Click Templates & Style then Theme Variables  
 3) Click The Create Variable Button  
 4) For Theme choose 'All'.  
-5) For usergroups choose whichever usergroups are considered staff.
-6) For unique name choose 'staff_only'.
-7) For Forums choose whichever you want.
+5) For usergroups choose whichever usergroups are considered staff.  
+6) For unique name choose 'staff_only'.  
+7) For Forums choose whichever you want.  
 8) For content, put what you want the person to see if they are staff. If you are using the premium version regex is supported so you can use $1 to represent
-the content between the tags.  
-9) If you are using the premium version you can set what you want the variable to display to those who aren't allowed to see it.  If you are using the normal version they will see nothing.  
-10) Save the variable.
-11) Go to templates and then whichever theme you want.
+the content between the tags.    
+9) If you are using the premium version you can set what you want the variable to display to those who aren't allowed to see it.  If you are using the normal version they will see nothing.    
+10) Save the variable.  
+11) Go to templates and then whichever theme you want.  
 12) If you are using the premium version put [staff_only]Your content here[/staff_only] otherwise put @{staff_only} in whichever template you want the code to appear in.  
-13) Save the template then browse the forum and it will be working.
+13) Save the template then browse the forum and it will be working.  
+
+#Premium Version Usage
+## Exclusive Form Fields
+1) Parsing Order - This determines the order in which variables are parsed.  Lower number is parsed before a higher number.  
+2)  No Match - This is what is shown to a user who is not allowed to view the content.  
+3)  Regex - This is used if you want to use a regular expression instead of simple replacement. 
+
+## Special Code In Templates
+1) Detecting Mobile Browser - You can use [mobile]Content here[/mobile] to show content to only users browsing on a mobile device.  
+2) Detecting Desktop Browser - Use [desktop]Content Here[/desktop] to show content to only desktop users.  
+
+## For Loop
+At the most basic level, it loops through all elements and puts them each in their own span.  
+Example: [foreach]1,3,2,4[/foreach]  
+### Allowed values for mode
+- span, div, ol, ul, table, p  
+
+### Allowed values for sort
+- asc, desc, random  
+
+Sorting a For loop and displaying it as an ordered list  
+Example: [foreach mode=ol sort=asc]1,3,2,4[/foreach]  
+
+You can also have items be sorted in a random order.  
+Example: [foreach mode=span sort=random]  
+
